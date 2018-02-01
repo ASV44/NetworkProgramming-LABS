@@ -1,0 +1,19 @@
+{
+  "name": "networkprogramming-labs",
+  "version": "1.0.0",
+  "description": "Laboratory works on Network programming (PR)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ASV44/NetworkProgramming-LABS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ASV44/NetworkProgramming-LABS/issues"
+  },
+  "homepage": "https://github.com/ASV44/NetworkProgramming-LABS#readme"
+}
