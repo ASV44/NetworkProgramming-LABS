@@ -1,13 +1,18 @@
 import request from 'request'
 import progress from 'cli-progress'
 import xmlParser from 'xml2js'
+import DataParser from './DataParser'
 
 export default class MetricsAggregator {
 
   constructor() {
     this.progressBar = new progress.Bar({}, progress.Presets.shades_classic);
-    this.devicesData = []
+    this.devicesData = {}
     this.aggregatedData = {}
+
+    this.parser = new DataParser()
+
+    this.received = 0
   }
 
   getKeyAndDevicesPaths() {
@@ -32,67 +37,61 @@ export default class MetricsAggregator {
         url: 'https://desolate-ravine-43301.herokuapp.com' + item['path']
       },
       (error, response, body) => {
-        this.handleDeviceResponse(body, paths)
+        this.received++
+        this.handleDeviceResponse(response.headers['content-type'], body, paths)
       });
     })
   }
 
-  handleDeviceResponse(response, paths) {
-    this.devicesData.push(response)
-    this.progressBar.update(this.devicesData.length / paths.length * 100)
-    if(this.devicesData.length == paths.length) {
+  handleDeviceResponse(type, response, paths) {
+    if(this.devicesData[type] === undefined) {
+      this.devicesData[type] = []
+    }
+    this.devicesData[type].push(response)
+    this.progressBar.update(Number(this.received / paths.length).toFixed(4) * 100)
+    if(this.received == paths.length) {
       this.progressBar.stop()
-      console.log(this.devicesData.pop())
+      console.log(this.devicesData['text/plain; charset=utf-8'][0])
+      delete this.devicesData['text/plain; charset=utf-8']
       this.parseDevicesData()
     }
   }
 
   parseDevicesData() {
-    this.devicesData.forEach(item => {
-      //console.log(item, this.getResponseType(item))
-      switch (this.getResponseType(item)) {
-        case 'XML':
-          xmlParser.parseString(item, (err, result) => {
-            let id = result['device']['$']['id']
-            let type = result['device']['type'][0]
-            let value = result['device']['value'][0]
-            this.addAggregatedData(id, type, value)
-          })
-          break;
-        case 'CSV':
-          this.parseCSV(item)
-          break
-        default:
-
+    for (var key in this.devicesData) {
+      if (this.devicesData.hasOwnProperty(key)) {
+        let parsedData = this.parser.parse(key ,this.devicesData[key])
+        this.addAggregatedData(parsedData)
       }
-    })
-    console.log(this.aggregatedData)
-  }
-
-  getResponseType(data) {
-    let type = data.startsWith("<") ? 'XML'  :
-               data.startsWith("{") ? 'Json' : 'CSV'
-
-    return type
-  }
-
-  parseCSV(data) {
-    let splitData = data.split("\n")
-    splitData.shift()
-    splitData.pop()
-    splitData.forEach(item => {
-      let sensorData = item.split(",")
-      this.addAggregatedData(sensorData[0], sensorData[1], sensorData[2])
-    })
-  }
-
-  addAggregatedData(id, type, value) {
-    if(this.aggregatedData[type] === undefined) {
-      this.aggregatedData[type] = []
     }
-    this.aggregatedData[type].push({
-      id : id,
-      value : value
+    this.showAggregatedData()
+  }
+
+  addAggregatedData(data) {
+    data.forEach(item => {
+      let type = item['type']
+      delete item['type']
+      if(this.aggregatedData[type] === undefined) {
+        this.aggregatedData[type] = []
+      }
+      this.aggregatedData[type].push(item)
     })
+  }
+
+  showAggregatedData() {
+    for(let i = 0; i < 6; i++) {
+      let header = i == 0 ? 'Temperature' :
+                   i == 1 ? 'Humidity'    :
+                   i == 2 ? 'Motion'      :
+                   i == 3 ? 'Alien Presence' :
+                   i == 4 ? 'Dark Matter' : 'No name Sensor'
+       console.log(header)
+      if(this.aggregatedData['' + i] !== undefined) {
+        this.aggregatedData['' + i].forEach(item => {
+          console.log('Device ' + item['id'] + ": " + item['value'])
+        })
+      }
+      console.log("\n")
+    }
   }
 }
