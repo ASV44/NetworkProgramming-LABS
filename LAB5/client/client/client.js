@@ -12,10 +12,17 @@ export default class Client {
     })
     client.on('data', (data) => {
        console.log(data.toString())
-       client.end()
+       //client.end()
     })
     client.on('end', () => {
        console.log('disconnected from server')
+    })
+
+
+    let stdin = process.openStdin();
+
+    stdin.addListener("data", (data) => {
+      client.write(data.toString().trim())
     })
   }
 }

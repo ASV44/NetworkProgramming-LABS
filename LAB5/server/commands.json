@@ -1,0 +1,10 @@
+{
+  "/help": {
+    "parameters": "",
+    "description": "Prints list of all available commands with description"
+  },
+  "/hello": {
+    "parameters": "[word]",
+    "description": "Respondes with text which is used as parameter"
+  }
+}
