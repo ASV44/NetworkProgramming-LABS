@@ -35,10 +35,21 @@ export default class DispatchHandler {
   }
 
   weather(city) {
-    let url ='http://api.openweathermap.org/data/2.5/weather?q=' + city + '&APPID=' + config.configs.weatherAPI.key
+    let url ='http://api.openweathermap.org/data/2.5/weather?q=' + city +
+             '&APPID=' + config.configs.weatherAPI.key
+
     request.get(url, (error, response, body) => {
-      console.log(body)
+      let data = JSON.parse(body)
+      let temp = Number(data.main.temp - 273).toFixed(2)
+      let message = 'Weather in ' + data.name + ': ' + temp + '°C ' +
+                     data.weather[0].main + ', ' + data.weather[0].description
+
+      this.client.write(message)
     })
+  }
+
+  star(data) {
+    this.client.write('⭐️')
   }
 
   error(command, parameters) {

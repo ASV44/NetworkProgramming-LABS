@@ -6,5 +6,13 @@
   "/hello": {
     "parameters": "[word]",
     "description": "Respondes with text which is used as parameter"
+  },
+  "/quote": {
+    "parameters": "",
+    "description": "Returns a random quote from random movie from quotes available on server"
+  },
+  "/weather": {
+    "parameters": "[city]",
+    "description": "Return current weather in a specific city, by making request to API"
   }
 }
