@@ -32,6 +32,7 @@
   "dependencies": {
     "cli-progress": "^1.8.0",
     "express": "^4.16.3",
-    "npm": "^6.0.0"
+    "npm": "^6.0.0",
+    "request": "^2.85.0"
   }
 }

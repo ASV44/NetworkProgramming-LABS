@@ -1,3 +1,4 @@
+import request from 'request'
 import fs from 'fs'
 import config from './config'
 
@@ -25,11 +26,19 @@ export default class DispatchHandler {
   }
 
   quote() {
-    let films = Object.keys(this.quotes)
-    let random = Math.floor(Math.random() * films.length)
-    let quotes = this.quotes[films[random]]
+    let movies = Object.keys(this.quotes)
+    let random = Math.floor(Math.random() * movies.length)
+    let randomMovie = movies[random]
+    let quotes = this.quotes[randomMovie]
     random = Math.floor(Math.random() * quotes.length)
-    this.client.write(quotes[random])
+    this.client.write(randomMovie + ': ' + quotes[random])
+  }
+
+  weather(city) {
+    let url ='http://api.openweathermap.org/data/2.5/weather?q=' + city + '&APPID=' + config.configs.weatherAPI.key
+    request.get(url, (error, response, body) => {
+      console.log(body)
+    })
   }
 
   error(command, parameters) {
