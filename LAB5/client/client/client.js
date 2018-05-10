@@ -51,7 +51,9 @@ export default class Client {
   }
 
   saveFile(data) {
-    let dest = fs.createWriteStream(__dirname + '/../resources/client_faf.jpeg')
+    let path = __dirname + '/../resources/client_faf.jpeg'
+    let dest = fs.createWriteStream(path)
     dest.write(data)
+    console.log('Saved to: ' + path)
   }
 }
