@@ -1,0 +1,22 @@
+{
+  "/help": {
+    "parameters": "",
+    "description": "Prints list of all available commands with description"
+  },
+  "/hello": {
+    "parameters": "[word]",
+    "description": "Respondes with text which is used as parameter"
+  },
+  "/quote": {
+    "parameters": "",
+    "description": "Returns a random quote from random movie from quotes available on server"
+  },
+  "/weather": {
+    "parameters": "[city]",
+    "description": "Return current weather in a specific city, by making request to API"
+  },
+  "/star": {
+    "parameters": "[number], <random> [start_range-finish_range]",
+    "description": "Return specific or random number of stars, random being from specific range"
+  }
+}
