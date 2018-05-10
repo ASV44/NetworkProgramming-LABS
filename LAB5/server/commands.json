@@ -14,5 +14,9 @@
   "/weather": {
     "parameters": "[city]",
     "description": "Return current weather in a specific city, by making request to API"
+  },
+  "/star": {
+    "parameters": "[number], <random> [start_range-finish_range]",
+    "description": "Return specific or random number of stars, random being from specific range"
   }
 }

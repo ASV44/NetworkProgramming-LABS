@@ -27,6 +27,7 @@ export default class Server {
     this.addCommand('/quote', (data) => { this.dispatchHandler.quote() })
     this.addCommand('/weather', (city) => { this.dispatchHandler.weather(city) })
     this.addCommand('/star', (data) => { this.dispatchHandler.star(data) })
+    this.addCommand('/getFile', (data) => { this.dispatchHandler.getFile() })
   }
 
   onClientConnected(client) {
