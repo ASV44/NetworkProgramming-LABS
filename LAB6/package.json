@@ -2,7 +2,7 @@
   "name": "networkprogramming-labs",
   "version": "1.0.0",
   "description": "Laboratory works on Network programming (PR)",
-  "main": "server/index.js",
+  "main": "client/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node bin/dev",
@@ -29,6 +29,7 @@
     "babel-register": "^6.26.0"
   },
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "uuid": "^3.2.1"
   }
 }
