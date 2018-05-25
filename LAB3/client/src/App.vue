@@ -1,23 +1,40 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
-  </div>
+    <div class="container">
+        <div class="mail-box">
+            <app-sidebar :messages="messages"></app-sidebar>
+            <app-content :messages="messages"></app-content>
+        </div>
+    </div>
 </template>
 
 <script>
-export default {
-  name: 'App'
-}
-</script>
+    import Sidebar from './components/Sidebar.vue';
+    import Content from './components/Content.vue';
+    import messages from './data/messages';
+    import randomMessages from './data/random-messages';
+    import { eventBus } from './main';
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+    export default {
+        data() {
+            return {
+                messages: messages
+            };
+        },
+        created() {
+            eventBus.$on('refreshMessages', () => {
+                let randomIndex = Math.floor(Math.random() * randomMessages.length);
+                let temp = [randomMessages[randomIndex]];
+                this.messages = temp.concat(this.messages.slice(0));
+            });
+
+            eventBus.$on('sentMessage', (data) => {
+                let temp = [data.message];
+                this.messages = temp.concat(this.messages.slice(0));
+            });
+        },
+        components: {
+            appSidebar: Sidebar,
+            appContent: Content
+        }
+    }
+</script>
