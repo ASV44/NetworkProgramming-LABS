@@ -17,7 +17,7 @@
     import Important from './Important.vue';
     import Trash from './Trash.vue';
     import ViewMessage from './ViewMessage.vue';
-    import EmailForm from './EmailForm.vue';
+    import Compose from './Compose.vue';
 
     export default {
         props: {
@@ -66,7 +66,7 @@
             appImportant: Important,
             appTrash: Trash,
             appViewMessage: ViewMessage,
-            appEmailForm: EmailForm
+            appCompose: Compose
         }
     }
 </script>

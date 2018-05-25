@@ -1,74 +1,140 @@
 <template>
-    <div>
-        <a href="#composeModal" data-toggle="modal" class="btn btn-compose">Compose</a>
+  <form novalidate class="md-layout" @submit.prevent="validateEmailForm">
+    <md-card class="md-layout-item md-size-50 md-small-size-100">
+      <md-card-header>
+        <div class="md-title">Send Email</div>
+        <span class='error-message'>{{errorMessage}}</span>
+        <span v-if="emailSent" class='success-message'>Email Succesfully Sent</span>
+      </md-card-header>
 
-        <div aria-hidden="true" role="dialog" tabindex="-1" id="composeModal" class="modal fade" style="display: none;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">&times;</button>
-                        <h4 class="modal-title">New Message</h4>
-                    </div>
+      <md-card-content>
+        <md-field :class="getValidationClass('toEmailAddresses')">
+          <label for="to-email-addresses">To:</label>
+          <md-input name="to-email-addresses" id="to-email-addresses" autocomplete="email-addresses" v-model="form.toEmailAddresses" :disabled="sending" />
+          <span class="md-error" v-if="!$v.form.toEmailAddresses.required">At least 1 email address is required</span>
+          <span class="md-error" v-if="$v.form.toEmailAddresses.required && !$v.form.toEmailAddresses.emailListValidator">Email address should be comma separated in valid format e.g john@example.com, doe@example.com</span>
+        </md-field>
 
-                    <div class="modal-body">
-                        <form @submit.prevent="sendMessage" role="form" class="form-horizontal">
-                            <div class="form-group">
-                                <label class="col-lg-2 control-label" for="subject">Subject</label>
-                                <div class="col-lg-10">
-                                    <input type="text" v-model="message.subject" id="subject" class="form-control">
-                                </div>
-                            </div>
+        <md-field :class="getValidationClass('ccEmailAddresses')">
+          <label for="cc-email-addresses">Cc:</label>
+          <md-input name="cc-email-addresses" id="cc-email-addresses" autocomplete="cc-email-addresses" v-model="form.ccEmailAddresses" :disabled="sending" />
+          <span class="md-error" v-if="!$v.form.ccEmailAddresses.emailListValidator">Email address should be comma separated in valid format e.g john@example.com, doe@example.com</span>
+        </md-field>
 
-                            <div class="form-group">
-                                <label class="col-lg-2 control-label" for="message">Message</label>
-                                <div class="col-lg-10">
-                                    <textarea v-model="message.content" rows="10" cols="30" class="form-control" id="message"></textarea>
-                                </div>
-                            </div>
+        <md-field :class="getValidationClass('bccEmailAddresses')">
+          <label for="bcc-email-addresses">Bcc:</label>
+          <md-input name="bcc-email-addresses" id="bcc-email-addresses" autocomplete="bcc-email-addresses" v-model="form.bccEmailAddresses" :disabled="sending" />
+          <span class="md-error" v-if="!$v.form.bccEmailAddresses.emailListValidator">Email address should be comma separated in valid format e.g john@example.com, doe@example.com</span>
+        </md-field>
 
-                            <div class="form-group">
-                                <div class="col-lg-offset-2 col-lg-10">
-                                    <button class="btn btn-send" type="submit">Send</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        <md-field :class="getValidationClass('subject')">
+          <label for="subject">Subject:</label>
+          <md-input name="subject" id="subject" autocomplete="subject" v-model="form.subject" :disabled="sending" />
+          <span class="md-error" v-if="!$v.form.subject.required">Subject is required</span>
+        </md-field>
+
+        <md-field :class="getValidationClass('emailText')">
+          <label for="emailText">Email Body:</label>
+          <md-textarea rows="20" cols="100" name="emailText" id="emailText" autocomplete="email-body" v-model="form.emailText" :disabled="sending" />
+          <span class="md-error" v-if="!$v.form.emailText.required">Email body is required</span>
+        </md-field>
+
+        <md-progress-bar md-mode="indeterminate" v-if="sending" />
+
+        <md-card-actions>
+          <md-button type="submit" class="md-primary" :disabled="sending">Send Email</md-button>
+        </md-card-actions>
+
+        <md-snackbar :md-active.sync="emailSent">Email was successfully sent!</md-snackbar>
+      </md-card-content>
+    </md-card>
+  </form>
 </template>
 
 <script>
-    import moment from 'moment';
-    import { eventBus } from '../main';
+import { validationMixin } from 'vuelidate'
+import {emailList} from '../validators/emailList'
 
-    export default {
-        data() {
-            return {
-                message: {
-                    subject: '',
-                    content: ''
-                }
-            };
-        },
-        methods: {
-            sendMessage() {
-                eventBus.$emit('sentMessage', {
-                    message: {
-                        subject: this.message.subject,
-                        content: this.message.content,
-                        isDeleted: false,
-                        type: 'outgoing',
-                        date: moment(),
-                        from: {
-                            name: 'Bo Andersen',
-                            email: 'info@codingexplained.com'
-                        },
-                        attachments: []
-                    }
-                });
-            }
-        }
+import {
+  required
+} from 'vuelidate/lib/validators'
+
+export default {
+  mixins: [validationMixin],
+  data: () => ({
+    form: {
+      toEmailAddresses: null,
+      ccEmailAddresses: null,
+      bccEmailAddresses: null,
+      subject: null,
+      emailText: null
+    },
+    emailSent: false,
+    sending: false,
+    errorMessage: null
+  }),
+  validations: {
+    form: {
+      toEmailAddresses: {
+        required,
+        emailList
+      },
+      ccEmailAddresses: {
+        emailList
+      },
+      bccEmailAddresses: {
+        emailList
+      },
+      subject: {
+        required
+      },
+      emailText: {
+        required
+      }
     }
+  },
+  methods: {
+    getValidationClass (fieldName) {
+      const field = this.$v.form[fieldName]
+
+      if (field) {
+        return {
+          'md-invalid': field.$invalid && field.$dirty
+        }
+      }
+    },
+
+    clearForm () {
+      this.$v.$reset()
+      this.form.toEmailAddresses = null
+      this.form.ccEmailAddresses = null
+      this.form.bccEmailAddresses = null
+      this.form.subject = null
+      this.form.emailText = null
+    },
+
+    validateEmailForm () {
+      this.$v.$touch()
+
+      if (!this.$v.$invalid) {
+        this.sendEmail()
+      }
+    }
+  }
+}
 </script>
+
+<style scoped>
+  .error-message {
+    color: red;
+  }
+  .success-message {
+    color: green;
+  }
+  .md-progress-bar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+  }
+</style>

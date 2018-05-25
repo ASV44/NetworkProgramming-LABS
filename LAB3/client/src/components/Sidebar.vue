@@ -1,7 +1,6 @@
 <template>
     <aside class="sm-side">
         <div class="user-head">
-            <img src="src/assets/images/profile.jpg">
 
             <div class="user-name">
                 <h5>Bo Andersen</h5>
@@ -10,8 +9,11 @@
         </div>
 
         <div class="compose-wrapper">
-            <app-compose></app-compose>
+          <a href="#composeModal" data-toggle="modal" class="btn btn-compose" @click.prevent="navigate('app-compose', 'Compose')">
+              Compose
+          </a>
         </div>
+
 
         <ul class="inbox-nav">
             <li :class="{ active: activeView == 'app-inbox' }">
@@ -35,11 +37,6 @@
             <li :class="{ active: activeView == 'app-trash' }">
                 <a href="#" @click.prevent="navigate('app-trash', 'Trash')">
                     <i class=" fa fa-trash-o"></i>Trash <span class="label label-default pull-right">{{ trashedMessages.length }}</span>
-                </a>
-            </li>
-            <li :class="{ active: activeView == 'app-email-form' }">
-                <a href="#" @click.prevent="navigate('app-email-form', 'Compose')">
-                    <i class=" fa fa-plus "></i>Compose <span class="label label-default pull-right"></span>
                 </a>
             </li>
         </ul>
