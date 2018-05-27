@@ -2,6 +2,7 @@ import config from './config'
 import Imap from 'imap'
 import xoauth2 from 'xoauth2'
 import util from 'util'
+import Smtp from './smtp'
 
 export default class Server {
   constructor(app) {
@@ -34,6 +35,15 @@ export default class Server {
     //   this.imapRequest()
     // })
 
+    this.smtp = new Smtp('grupafaf151@gmail.com', 'GRUPAFAF151ABCD')
+    // this.smtp.send({
+    //   to: 'vdovicenco.alexandr@gmail.com', // list of receivers
+    //   // cc: ,
+    //   subject: 'Hello ✔', // Subject line
+    //   text: 'Hello world?', // plain text body
+    //   html: '<b>Hello world?</b>' // html body
+    // })
+
     this.imap = new Imap({
       user: 'grupafaf151@gmail.com',
       password: 'GRUPAFAF151ABCD',
@@ -41,7 +51,7 @@ export default class Server {
       port: 993,
       tls: true
     })
-    this.imapRequest()
+    //this.imapRequest()
   }
 
   start() {

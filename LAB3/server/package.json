@@ -33,6 +33,7 @@
     "cli-progress": "^1.8.0",
     "express": "^4.16.3",
     "imap": "^0.8.19",
+    "nodemailer": "^4.6.5",
     "npm": "^5.8.0",
     "request": "^2.85.0",
     "xml2js": "^0.4.19",
