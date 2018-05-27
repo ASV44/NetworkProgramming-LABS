@@ -14,7 +14,6 @@
           </a>
         </div>
 
-
         <ul class="inbox-nav">
             <li :class="{ active: activeView == 'app-inbox' }">
                 <a href="#" @click.prevent="navigate('app-inbox', 'Inbox')">
