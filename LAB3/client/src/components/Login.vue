@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import { eventBus } from '../main';
+
 export default {
   name: 'Login',
 data () {
@@ -22,20 +24,23 @@ data () {
 },
 methods: {
   login () {
-    console.log(this.email)
-    console.log(this.password)
+    this.$http.post('/login', { user: this.email, password: this.password })
+              .then(response => {
+                let data = response.data
+                data.email = this.email
+                localStorage.setItem('loginData', JSON.stringify(data))
+                this.$router.replace('/mail')
+              })
+              .catch(error => console.log(error))
   }
 }
 }
 </script>
 
 <style lang="css">
-body {
-background: #605B56;
-}
 
 .login-wrapper {
-background: #fff;
+background: #f0f0f0;
 width: 70%;
 margin: 12% auto;
 }

@@ -3,8 +3,7 @@
         <div class="user-head">
 
             <div class="user-name">
-                <h5>Bo Andersen</h5>
-                <span class="email-address">info@codingexplained.com</span>
+                <span class="email-address">{{ email }}</span>
             </div>
         </div>
 
@@ -51,7 +50,8 @@
             messages: {
                 type: Array,
                 required: true
-            }
+            },
+            email: String
         },
         data() {
             return {

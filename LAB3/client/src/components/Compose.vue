@@ -119,6 +119,10 @@ export default {
       if (!this.$v.$invalid) {
         this.sendEmail()
       }
+    },
+
+    sendEmail() {
+
     }
   }
 }

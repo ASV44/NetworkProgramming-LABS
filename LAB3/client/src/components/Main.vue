@@ -1,8 +1,8 @@
 <template>
     <div class="container">
         <div class="mail-box">
-            <app-sidebar :messages="messages"></app-sidebar>
-            <app-content :messages="messages"></app-content>
+            <app-sidebar :messages="messages" :email="loginData.email"></app-sidebar>
+            <app-content :messages="messages" :token="loginData.token"></app-content>
         </div>
     </div>
 </template>
@@ -17,20 +17,22 @@
     export default {
         data() {
             return {
-                messages: messages
+                messages: messages,
+                loginData: JSON.parse(localStorage.getItem('loginData'))
             };
         },
         created() {
             eventBus.$on('refreshMessages', () => {
-                let randomIndex = Math.floor(Math.random() * randomMessages.length);
-                let temp = [randomMessages[randomIndex]];
-                this.messages = temp.concat(this.messages.slice(0));
-            });
+              console.log()
+              let randomIndex = Math.floor(Math.random() * randomMessages.length)
+              let temp = [randomMessages[randomIndex]]
+              this.messages = temp.concat(this.messages.slice(0))
+            })
 
             eventBus.$on('sentMessage', (data) => {
-                let temp = [data.message];
-                this.messages = temp.concat(this.messages.slice(0));
-            });
+              let temp = [data.message]
+              this.messages = temp.concat(this.messages.slice(0))
+            })
         },
         components: {
             appSidebar: Sidebar,

@@ -24,6 +24,10 @@
             messages: {
                 type: Array,
                 required: true
+            },
+            token: {
+               type:String,
+               required: true
             }
         },
         data() {
@@ -47,17 +51,18 @@
                     data: data.data || {}
                 }];
 
-                this.history = temp.concat(this.history.splice(0));
+                this.history = temp.concat(this.history.splice(0))
             });
         },
         computed: {
             currentView() {
                 let current = this.history[0];
-                current.data.messages = this.messages;
+                current.data.messages = this.messages
+                current.data.token = this.token
                 return current;
             },
             previousView() {
-                return typeof this.history[1] !== 'undefined' ? this.history[1] : null;
+                return typeof this.history[1] !== 'undefined' ? this.history[1] : null
             }
         },
         components: {
