@@ -21,12 +21,6 @@
           <span class="md-error" v-if="!$v.form.ccEmailAddresses.emailListValidator">Email address should be comma separated in valid format e.g john@example.com, doe@example.com</span>
         </md-field>
 
-        <md-field :class="getValidationClass('bccEmailAddresses')">
-          <label for="bcc-email-addresses">Bcc:</label>
-          <md-input name="bcc-email-addresses" id="bcc-email-addresses" autocomplete="bcc-email-addresses" v-model="form.bccEmailAddresses" :disabled="sending" />
-          <span class="md-error" v-if="!$v.form.bccEmailAddresses.emailListValidator">Email address should be comma separated in valid format e.g john@example.com, doe@example.com</span>
-        </md-field>
-
         <md-field :class="getValidationClass('subject')">
           <label for="subject">Subject:</label>
           <md-input name="subject" id="subject" autocomplete="subject" v-model="form.subject" :disabled="sending" />
@@ -60,12 +54,17 @@ import {
 } from 'vuelidate/lib/validators'
 
 export default {
+  props: {
+      data: {
+          type: Object,
+          required: true
+      }
+  },
   mixins: [validationMixin],
   data: () => ({
     form: {
       toEmailAddresses: null,
       ccEmailAddresses: null,
-      bccEmailAddresses: null,
       subject: null,
       emailText: null
     },
@@ -108,7 +107,6 @@ export default {
       this.$v.$reset()
       this.form.toEmailAddresses = null
       this.form.ccEmailAddresses = null
-      this.form.bccEmailAddresses = null
       this.form.subject = null
       this.form.emailText = null
     },
@@ -122,7 +120,10 @@ export default {
     },
 
     sendEmail() {
-
+      this.form.token = this.data.token
+      this.$http.post('/send', this.form)
+                .then(response => {})
+                .catch(error => console.log(error))
     }
   }
 }

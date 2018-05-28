@@ -23,7 +23,6 @@
         },
         created() {
             eventBus.$on('refreshMessages', () => {
-              console.log()
               let randomIndex = Math.floor(Math.random() * randomMessages.length)
               let temp = [randomMessages[randomIndex]]
               this.messages = temp.concat(this.messages.slice(0))
