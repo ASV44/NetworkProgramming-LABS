@@ -17,14 +17,6 @@ export default class Server {
     this.users = {}
 
     this.imap = new Imap()
-    this.smtp = new Smtp('grupafaf151@gmail.com', 'GRUPAFAF151ABCD')
-    // this.smtp.send({
-    //   to: 'vdovicenco.alexandr@gmail.com', // list of receivers
-    //   // cc: ,
-    //   subject: 'Hello ✔', // Subject line
-    //   text: 'Hello world?', // plain text body
-    //   html: '<b>Hello world?</b>' // html body
-    // })
   }
 
   start() {
@@ -43,6 +35,18 @@ export default class Server {
       this.users[token] = req.body
       res.send({
         token: token
+      })
+    })
+
+    this.router.post('/send', (req, res) => {
+      console.log(req.body)
+      let decoded = jwt.decode(req.body.token)
+      this.smtp = new Smtp(decoded.user, decoded.password)
+      this.smtp.send({
+        to: req.body.toEmailAddresses, // list of receivers
+        cc: req.body.ccEmailAddresses,
+        subject: req.body.subject, // Subject line
+        text: req.body.emailText // plain text body
       })
     })
 

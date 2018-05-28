@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
 
 export default class Smtp {
-  constructor(user, password, host = 'smtp.gmail.com') {
+  constructor(user = '', password = '', host = 'smtp.gmail.com') {
     this.transporter = nodemailer.createTransport({
         host: host,
         port: 465,
@@ -14,11 +14,11 @@ export default class Smtp {
 
     this.transporter.verify(function(error, success) {
        if (error) {
-            console.log(error);
+            console.log(error)
        } else {
-            console.log('Server is ready to take our messages');
+            console.log('Server is ready to take our messages')
        }
-    });
+    })
   }
 
   send(mailOptions) {
@@ -29,5 +29,9 @@ export default class Smtp {
         }
         console.log('Message sent to: %s', mailOptions.to);
     })
+  }
+
+  getUser() {
+    return this.transporter.options.auth.user
   }
 }
