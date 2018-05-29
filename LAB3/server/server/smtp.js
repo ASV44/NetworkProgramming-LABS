@@ -23,11 +23,16 @@ export default class Smtp {
 
   send(mailOptions) {
     // send mail with defined transport object
-    this.transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
-        console.log('Message sent to: %s', mailOptions.to);
+    return new Promise((resolve, reject) => {
+      this.transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log(error)
+            reject(error)
+          } else {
+            console.log('Message sent to: %s', mailOptions.to)
+            resolve(mailOptions)
+          }
+      })
     })
   }
 

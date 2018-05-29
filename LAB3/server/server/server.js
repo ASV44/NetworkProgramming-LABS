@@ -39,14 +39,22 @@ export default class Server {
     })
 
     this.router.post('/send', (req, res) => {
-      console.log(req.body)
       let decoded = jwt.decode(req.body.token)
       this.smtp = new Smtp(decoded.user, decoded.password)
-      this.smtp.send({
+      let send = this.smtp.send({
         to: req.body.toEmailAddresses, // list of receivers
-        cc: req.body.ccEmailAddresses,
+        cc: req.body.ccEmailAddresses, // list of cc receivers
         subject: req.body.subject, // Subject line
         text: req.body.emailText // plain text body
+      })
+
+      send.then(options => {
+        res.send({
+          status: 'sent',
+          options: options
+        })
+      }).catch(error => {
+        res.status(400).send(error)
       })
     })
 
