@@ -1,5 +1,4 @@
 import config from './config'
-import util from 'util'
 import Imap from './imap'
 import Smtp from './smtp'
 import cors from 'cors'
@@ -39,7 +38,7 @@ export default class Server {
     })
 
     this.router.post('/send', (req, res) => {
-      let decoded = jwt.decode(req.body.token)
+      let decoded = jwt.decode(req.headers.token)
       this.smtp = new Smtp(decoded.user, decoded.password)
       let send = this.smtp.send({
         to: req.body.toEmailAddresses, // list of receivers
@@ -56,6 +55,12 @@ export default class Server {
       }).catch(error => {
         res.status(400).send(error)
       })
+    })
+
+    this.router.get('/inbox', (req, res) => {
+      let decoded = jwt.decode(req.headers.token)
+      this.imap.setUser(decoded)
+      this.imap.imapRequest()
     })
 
     this.app.use('/api/v1', this.router)

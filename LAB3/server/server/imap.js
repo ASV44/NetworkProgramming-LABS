@@ -1,33 +1,9 @@
 import imap from 'imap'
+import util from 'util'
 import xoauth2 from 'xoauth2'
 
 export default class Imap {
   constructor() {
-
-    // this.xoauth2gen = xoauth2.createXOAuth2Generator({
-    //   user: 'vdovicenco.alexandr@gmail.com',
-    //   clientId: '617254630464-50eqjadbh43mp61dgjv2iksfettrhftc.apps.googleusercontent.com',
-    //   clientSecret: 'xzw2yUq5PYcU3v2A55gioAo-',
-    //   refreshToken: '1/cXI75lCFo4CcLN6BZvSvxvulXVIag2ptHhMNm17i-LI'
-    // });
-    //
-    //
-    //
-    // this.xoauth2gen.getToken((err, token) => {
-    //   if(err){
-    //       return console.log(err)
-    //   }
-    //   console.log("AUTH XOAUTH2 " + token)
-    //   this.imap = new Imap({
-    //     //user: 'grupafaf151@gmail.com',
-    //     xoauth2: token,
-    //     //password: 'FAF151ABCD',
-    //     host: 'imap.gmail.com',
-    //     port: 993,
-    //     tls: true
-    //   })
-    //   this.imapRequest()
-    // })
 
     this.imap = new imap({
       host: 'imap.gmail.com',
@@ -37,18 +13,14 @@ export default class Imap {
   }
 
   setUser(config) {
-    this.imap.config.user = config.setUser
-    this.imap.config.password = config.password
-  }
-
-  openInbox(cb) {
-    this.imap.openBox('INBOX', true, cb)
+    this.imap._config.user = config.user
+    this.imap._config.password = config.password
   }
 
   imapRequest() {
     let inspect = util.inspect
     this.imap.once('ready', () => {
-      this.openInbox((err, box) => {
+      this.imap.openBox('INBOX', true, (err, box) => {
         if (err) throw err
         var f = this.imap.seq.fetch('1:*', {
           bodies: 'HEADER.FIELDS (FROM TO SUBJECT DATE)'
@@ -62,7 +34,7 @@ export default class Imap {
               buffer += chunk.toString('utf8')
             })
             stream.once('end', () => {
-              console.log(prefix + 'Parsed header: %s', inspect(Imap.parseHeader(buffer)))
+              console.log(prefix + 'Parsed header: %s', inspect(imap.parseHeader(buffer)))
             })
           })
           msg.once('end', () => {
