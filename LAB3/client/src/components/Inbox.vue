@@ -23,6 +23,11 @@
                 required: true
             }
         },
+        created() {
+          // this.$http.post('/inbox', this.form)
+          //           .then(response => {})
+          //           .catch(error => console.log(error))
+        },
         methods: {
             refresh() {
                 eventBus.$emit('refreshMessages');

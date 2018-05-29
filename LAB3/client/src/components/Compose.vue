@@ -122,8 +122,24 @@ export default {
     sendEmail() {
       this.form.token = this.data.token
       this.$http.post('/send', this.form)
-                .then(response => {})
-                .catch(error => console.log(error))
+                .then(response => this.onEmailSent())
+                .catch(error => {
+                  console.log(error)
+                  this.onEmailError()
+                })
+    },
+
+    onEmailSent() {
+      this.emailSent = true
+      this.sending = false
+      this.errorMessage = null
+      this.clearForm()
+    },
+
+    onEmailError() {
+      this.emailSent = false
+      this.sending = false
+      this.errorMessage = 'Error occured while sending email. Please try again!'
     }
   }
 }
