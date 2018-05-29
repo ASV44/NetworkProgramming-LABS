@@ -8,7 +8,7 @@
             </div>
         </div>
 
-        <app-messages :messages="incomingMessages"></app-messages>
+        <app-messages :messages="this.messages"></app-messages>
     </div>
 </template>
 
@@ -23,9 +23,17 @@
                 required: true
             }
         },
+        data() {
+          return {
+            messages: []
+          }
+        },
         created() {
           this.$http.get('/inbox')
-                    .then(response => {})
+                    .then(response => {
+                      console.log(response.data)
+                      this.messages = response.data.inbox.reverse()
+                    })
                     .catch(error => console.log(error))
         },
         methods: {

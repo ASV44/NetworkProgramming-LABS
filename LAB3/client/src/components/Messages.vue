@@ -8,10 +8,10 @@
                         <i :class="['fa', 'fa-star', { important: message.isImportant }]"></i>
                     </a>
                 </td>
-                <td>{{ message.from.name }}</td>
+                <td>{{ message.from.value[0].name }}</td>
                 <td>{{ message.subject }}</td>
                 <td><i v-if="message.attachments.length > 0" class="fa fa-paperclip"></i></td>
-                <td class="text-right">{{ message.date.fromNow() }}</td>
+                <td class="text-right">{{ getDate(message.date) }}</td>
             </tr>
         </tbody>
     </table>
@@ -20,7 +20,8 @@
 </template>
 
 <script>
-    import { eventBus } from '../main';
+    import { eventBus } from '../main'
+    import moment from 'moment'
 
     export default {
         props: {
@@ -38,6 +39,10 @@
                         message: message
                     }
                 });
+            },
+
+            getDate(date) {
+              return moment(date).fromNow()
             }
         }
     }
