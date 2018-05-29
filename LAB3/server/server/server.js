@@ -14,8 +14,6 @@ export default class Server {
     this.start()
 
     this.users = {}
-
-    this.imap = new Imap()
   }
 
   start() {
@@ -59,8 +57,13 @@ export default class Server {
 
     this.router.get('/inbox', (req, res) => {
       let decoded = jwt.decode(req.headers.token)
-      this.imap.setUser(decoded)
-      this.imap.imapRequest()
+      this.imap = new Imap(decoded.user, decoded.password)
+      this.imap.getInbox()
+               .then(messages => {
+                 res.send({
+                   inbox: messages
+                 })
+               })
     })
 
     this.app.use('/api/v1', this.router)
