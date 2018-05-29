@@ -54,12 +54,6 @@ import {
 } from 'vuelidate/lib/validators'
 
 export default {
-  props: {
-      data: {
-          type: Object,
-          required: true
-      }
-  },
   mixins: [validationMixin],
   data: () => ({
     form: {
@@ -120,7 +114,6 @@ export default {
     },
 
     sendEmail() {
-      this.form.token = this.data.token
       this.$http.post('/send', this.form)
                 .then(response => this.onEmailSent())
                 .catch(error => {

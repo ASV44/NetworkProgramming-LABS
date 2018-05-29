@@ -5,20 +5,16 @@ import App from './App.vue'
 import router from './router'
 import VueMaterial from 'vue-material'
 import Vuelidate from 'vuelidate'
-import axios from './api/axios'
-import VueAxios from 'vue-axios'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 
 Vue.use(VueMaterial)
 Vue.use(Vuelidate)
-Vue.use(VueAxios, axios)
 
 export const eventBus = new Vue();
 
 new Vue({
   el: '#app',
   router,
-  axios,
   render: h => h(App)
 })

@@ -24,9 +24,9 @@
             }
         },
         created() {
-          // this.$http.post('/inbox', this.form)
-          //           .then(response => {})
-          //           .catch(error => console.log(error))
+          this.$http.get('/inbox')
+                    .then(response => {})
+                    .catch(error => console.log(error))
         },
         methods: {
             refresh() {
