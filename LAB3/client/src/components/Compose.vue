@@ -35,9 +35,13 @@
 
         <md-progress-bar md-mode="indeterminate" v-if="sending" />
 
-        <md-card-actions>
-          <md-button type="submit" class="md-primary" :disabled="sending">Send Email</md-button>
-        </md-card-actions>
+        <div class="send-email-btn">
+          <md-card-actions>
+            <md-button type="submit" class="md-primary" :disabled="sending">Send Email</md-button>
+          </md-card-actions>
+       </div>
+
+        <input type="file" id="file" name="file" @change="addAttachment($event)">
 
         <md-snackbar :md-active.sync="emailSent">Email was successfully sent!</md-snackbar>
       </md-card-content>
@@ -133,6 +137,26 @@ export default {
       this.emailSent = false
       this.sending = false
       this.errorMessage = 'Error occured while sending email. Please try again!'
+    },
+
+    addAttachment(event) {
+      let reader = new FileReader()
+      reader.onload = (e) => {
+        this.form.attachments = [{
+          filename: event.target.files[0].name,
+          content: e.target.result
+        }]
+      }
+      reader.readAsText(event.target.files[0])
+    },
+
+    toBuffer(ab) {
+      let buf = new Buffer(ab.byteLength)
+      let view = new Uint8Array(ab)
+      view.forEach((item, position) => {
+        buf[position] = item
+      })
+      return buf
     }
   }
 }

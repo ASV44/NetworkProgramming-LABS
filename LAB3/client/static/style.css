@@ -390,3 +390,13 @@ ul.inbox-pagination li {
   left: 50%;
   margin-left: -4em;
 }
+
+.send-email-btn {
+  bottom: 0;
+  left: 85%;
+  position: absolute;
+}
+
+.attachement-btn {
+  float: left;
+}
