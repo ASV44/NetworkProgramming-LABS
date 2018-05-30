@@ -10,7 +10,7 @@
                 </td>
                 <td>{{ message.from.value[0].name }}</td>
                 <td>{{ message.subject }}</td>
-                <td><i v-if="message.attachments.length > 0" class="fa fa-paperclip"></i></td>
+                <td><i v-if="message.attachments.length > 0"></i>{{message.attachments.length}}</td>
                 <td class="text-right">{{ getDate(message.date) }}</td>
             </tr>
         </tbody>
@@ -40,9 +40,11 @@
                     }
                 });
             },
-
             getDate(date) {
               return moment(date).fromNow()
+            },
+            preview(message) {
+              return message.split('.')[0]
             }
         }
     }

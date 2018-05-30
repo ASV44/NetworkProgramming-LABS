@@ -20,18 +20,18 @@
             </template>
         </div>
 
-        <p><strong>Date:</strong> {{ data.message.date.fromNow() }}</p>
-        <p><strong>From:</strong> {{ data.message.from.name }} <{{ data.message.from.email }}></p>
+        <p><strong>Date:</strong> {{ getDate(data.message.date) }}</p>
+        <p><strong>From:</strong> {{ data.message.from.value[0].name }} < {{ data.message.from.value[0].address }}></p>
         <hr>
 
-        <div v-html="data.message.content" class="message"></div>
+        <div v-html="data.message.textAsHtml" class="message"></div>
 
         <div v-if="data.message.attachments.length > 0" class="attachments">
             <h4>Attachments</h4>
 
             <ul>
                 <li v-for="attachment in data.message.attachments">
-                    <i class="fa fa-paperclip"></i> {{ attachment.fileName }} ({{ attachment.size | formatBytes }})
+                    <i class="fa fa-paperclip"></i> {{ attachment.filename }} ({{ attachment.size | formatBytes }})
                 </li>
             </ul>
         </div>
@@ -39,7 +39,8 @@
 </template>
 
 <script>
-    import { eventBus } from '../main';
+    import { eventBus } from '../main'
+    import moment from 'moment'
 
     export default {
         props: {
@@ -62,6 +63,9 @@
                     title: previousView.title,
                     data: previousView.data
                 });
+            },
+            getDate(date) {
+              return moment(date).fromNow()
             }
         },
         filters: {
