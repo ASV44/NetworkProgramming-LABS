@@ -58,7 +58,7 @@ export default class Server {
     this.router.get('/inbox', (req, res) => {
       let decoded = jwt.decode(req.headers.token)
       this.imap = new Imap(decoded.user, decoded.password)
-      this.imap.getInbox()
+      this.imap.getInbox(req.query.page || 1)
                .then(messages => {
                  res.send({
                    inbox: messages

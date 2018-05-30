@@ -28,14 +28,15 @@ export default class Imap {
     })
   }
 
-  getInbox() {
+  getInbox(page) {
     return new Promise((resolve, reject) => {
       this.imapRequest = () => {
         let mailsParsers = []
         let inspect = util.inspect
         this.imap.openBox('INBOX', true, (err, box) => {
           if (err) throw err
-          var f = this.imap.seq.fetch('*:' + (box.messages.total - 10)  , {
+          let start = box.messages.total - page * 10
+          var f = this.imap.seq.fetch(start + ':' + (start + 10) , {
             bodies: ''
           })
           f.on('message', (msg, seqno) => {
@@ -45,8 +46,7 @@ export default class Imap {
               mailsParsers.push(this.simpleParser(stream))
             })
             msg.once('attributes', (attrs) => {
-              console.log(attrs)
-              //messages.seqno.
+              //console.log(attrs)
             })
             msg.once('end', () => {
               console.log(prefix + 'Finished')
@@ -58,6 +58,7 @@ export default class Imap {
           f.once('end', () => {
             console.log('Done fetching all messages!')
             Promise.all(mailsParsers).then(mails => {
+              console.log('******* All parsed ********');
               resolve(mails)
             })
             this.imap.end()
