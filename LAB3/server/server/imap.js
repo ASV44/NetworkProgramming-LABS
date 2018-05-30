@@ -17,7 +17,9 @@ export default class Imap {
 
     this.imap.connect()
 
-    this.imap.once('ready', () => {this.imapRequest()})
+    this.imap.once('ready', () => {
+      console.log('Imap Connection Ready')
+      this.imapRequest()})
 
     this.imap.once('error', (err) => {
       console.log(err)
@@ -61,6 +63,53 @@ export default class Imap {
               console.log('******* All parsed ********');
               resolve(mails)
             })
+            this.imap.end()
+          })
+        })
+      }
+    })
+  }
+
+  getInboxHeaders() {
+    return new Promise((resolve, reject) => {
+      this.imapRequest = () => {
+        let headers = {}
+        let inspect = util.inspect
+        this.imap.openBox('INBOX', true, (err, box) => {
+          if (err) throw err
+          let start = box.messages.total - 10
+          var f = this.imap.seq.fetch(start + ':' + (start + 10) , {
+            bodies: 'HEADER.FIELDS (FROM TO SUBJECT DATE)'
+          })
+          f.on('message', (msg, seqno) => {
+            console.log('Message #%d', seqno)
+            var prefix = '(#' + seqno + ') '
+            msg.on('body', (stream, info) => {
+              var buffer = ''
+              stream.on('data', (chunk) => {
+                buffer += chunk.toString('utf8')
+              })
+              stream.once('end', () => {
+                headers.seqno.header = inspect(imap.parseHeader(buffer))
+              })
+            })
+            msg.once('attributes', (attrs) => {
+              headers.seqno.attributes = attrs
+            })
+            msg.once('end', () => {
+              console.log(prefix + 'Finished')
+            })
+          })
+          f.once('end', () => {
+            console.log('Done fetching all messages!')
+            console.log('******* All parsed ********')
+            let headersList = []
+            for(var data in headers) {
+              data.header.isRead = data.attributes.flags[0] === '\Seen' ? true : false
+              data.header.uuid = data.attributes.uid
+              headersList.push(data.header)
+            }
+            resolve(headersList)
             this.imap.end()
           })
         })

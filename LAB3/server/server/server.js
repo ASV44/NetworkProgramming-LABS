@@ -36,7 +36,6 @@ export default class Server {
     })
 
     this.router.post('/send', (req, res) => {
-      console.log(req.body)
       req.body.attachments[0].content = new Buffer(req.body.attachments[0].content, 'utf-8')
       let decoded = jwt.decode(req.headers.token)
       this.smtp = new Smtp(decoded.user, decoded.password)
@@ -62,6 +61,17 @@ export default class Server {
       let decoded = jwt.decode(req.headers.token)
       this.imap = new Imap(decoded.user, decoded.password)
       this.imap.getInbox(req.query.page || 1)
+               .then(messages => {
+                 res.send({
+                   inbox: messages
+                 })
+               })
+    })
+
+    this.router.get('/inbox-headers', (req, res) => {
+      let decoded = jwt.decode(req.headers.token)
+      this.imap = new Imap(decoded.user, decoded.password)
+      this.imap.getInboxHeaders()
                .then(messages => {
                  res.send({
                    inbox: messages
