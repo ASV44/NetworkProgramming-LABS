@@ -36,13 +36,16 @@ export default class Server {
     })
 
     this.router.post('/send', (req, res) => {
+      console.log(req.body)
+      req.body.attachments[0].content = new Buffer(req.body.attachments[0].content, 'utf-8')
       let decoded = jwt.decode(req.headers.token)
       this.smtp = new Smtp(decoded.user, decoded.password)
       let send = this.smtp.send({
         to: req.body.toEmailAddresses, // list of receivers
         cc: req.body.ccEmailAddresses, // list of cc receivers
         subject: req.body.subject, // Subject line
-        text: req.body.emailText // plain text body
+        text: req.body.emailText, // plain text body
+        attachments: req.body.attachments || []
       })
 
       send.then(options => {
